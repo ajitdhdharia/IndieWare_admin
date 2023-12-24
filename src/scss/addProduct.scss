@@ -1,0 +1,24 @@
+@import "./variables";
+
+.test {
+  border: 2px solid red;
+}
+#add-product {
+  margin: 5rem 7rem;
+
+  .title {
+    display: flex;
+    color: $deep-charcoal;
+    font-size: 2rem;
+    justify-content: center;
+  }
+
+  .product-details {
+    padding-top: 2rem;
+  }
+  .submit-btn {
+    margin-top: 2rem;
+  }
+}
+
+// className="test"

@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useState } from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import Collapse from "@mui/material/Collapse";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -13,9 +15,22 @@ import Badge from "@mui/material/Badge";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems } from "./listItems";
-
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import PeopleIcon from "@mui/icons-material/People";
+import ContactPageIcon from "@mui/icons-material/ContactPage";
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import CategoryIcon from "@mui/icons-material/Category";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+
+import "../../styles/main_layout.css";
 
 const drawerWidth = 240;
 
@@ -67,17 +82,42 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function MainLayout() {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [openNestedList, setOpenNestedList] = useState({});
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  const handleClick = (item) => {
+    setOpenNestedList((prevOpen) => ({ ...prevOpen, [item]: !prevOpen[item] }));
+  };
+
+  const menuItems = [
+    ["Dashboard", <SpaceDashboardIcon />, []],
+    ["Customers", <PeopleIcon />, []],
+    ["Queries", <ContactPageIcon />, []],
+    [
+      "Catalog",
+      <Inventory2Icon />,
+      [
+        ["Add Product", <AddBusinessIcon />],
+        ["Product List", <ReceiptLongIcon />],
+        ["Catogeries", <CategoryIcon />],
+      ],
+    ],
+  ];
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
           <Toolbar
+            className="admin-appbar"
             sx={{
               pr: "24px", // keep right padding when drawer closed
             }}
@@ -101,7 +141,7 @@ export default function MainLayout() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              Ajit Dhdharia
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -110,8 +150,9 @@ export default function MainLayout() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer className="admin-drawer" variant="permanent" open={open}>
           <Toolbar
+            className="admin-drawer-bar"
             sx={{
               display: "flex",
               alignItems: "center",
@@ -119,12 +160,85 @@ export default function MainLayout() {
               px: [1],
             }}
           >
-            <IconButton onClick={toggleDrawer}>
+            <Typography
+              component="h1"
+              variant="h6"
+              className="dashboard-heading"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Admin Dashboard
+            </Typography>
+            <IconButton className="chevron-icon" onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
           <Divider />
-          <List component="nav">{mainListItems}</List>
+          <List component="nav">
+            {menuItems.map((item, index) => (
+              <React.Fragment key={index}>
+                {item[0].trim().toLowerCase() !== "catalog" ? (
+                  <Link
+                    className="drawer-link"
+                    to={
+                      item[0].trim().toLowerCase() === "dashboard"
+                        ? "/dashboard"
+                        : `/dashboard/${item[0].trim().toLowerCase()}`
+                    }
+                  >
+                    <ListItemButton
+                      onClick={() => item[2].length > 0 && handleClick(item[0])}
+                    >
+                      <ListItemIcon className="icon">{item[1]}</ListItemIcon>
+                      <ListItemText className="drawer-text" primary={item[0]} />
+                      {item[2].length > 0 &&
+                        (openNestedList[item[0]] ? (
+                          <ExpandLess />
+                        ) : (
+                          <ExpandMore />
+                        ))}
+                    </ListItemButton>
+                  </Link>
+                ) : (
+                  <ListItemButton
+                    onClick={() => item[2].length > 0 && handleClick(item[0])}
+                  >
+                    <ListItemIcon className="icon">{item[1]}</ListItemIcon>
+                    <ListItemText primary={item[0]} />
+                    {item[2].length > 0 &&
+                      (openNestedList[item[0]] ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      ))}
+                  </ListItemButton>
+                )}
+                <Collapse
+                  in={openNestedList[item[0]]}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  {item[2].map((nestedItem, nestedIndex) => (
+                    <Link
+                      className="drawer-link"
+                      key={nestedIndex}
+                      to={`/dashboard/${nestedItem[0]
+                        .replace(/ +/g, "")
+                        .toLowerCase()
+                        .trim()}`}
+                    >
+                      <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemIcon className="icon">
+                          {nestedItem[1]}
+                        </ListItemIcon>
+                        <ListItemText primary={nestedItem[0]} />
+                      </ListItemButton>
+                    </Link>
+                  ))}
+                </Collapse>
+              </React.Fragment>
+            ))}
+          </List>
         </Drawer>
         <Box
           component="main"
@@ -139,6 +253,7 @@ export default function MainLayout() {
           }}
         >
           <Toolbar />
+          {/* Outlet for other pages */}
           <Outlet />
         </Box>
       </Box>

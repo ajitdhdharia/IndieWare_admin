@@ -14,8 +14,10 @@ import SignIn from "./pages/Signin";
 import SignUp from "./pages/SignUp";
 import Orders from "./pages/Dashboard/Orders";
 import Customers from "./pages/Dashboard/Customers";
-import Catalog from "./pages/Dashboard/Catalog";
+import AddProduct from "./pages/Dashboard/Products/AddProduct";
 import Queries from "./pages/Dashboard/Queries";
+import ProductList from "./pages/Dashboard/Products/ProductList";
+import Categories from "./pages/Dashboard/Products/Catogery"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,8 +30,10 @@ const router = createBrowserRouter(
         <Route index element={<Dashboard />} />
         <Route path="/dashboard/orders" element={<Orders />} />
         <Route path="/dashboard/customers" element={<Customers />} />
-        <Route path="/dashboard/catalog" element={<Catalog />} />
         <Route path="/dashboard/queries" element={<Queries />} />
+        <Route path="/dashboard/addproduct" element={<AddProduct />} />
+        <Route path="/dashboard/productlist" element={<ProductList />} />
+        <Route path="/dashboard/catogeries" element={<Categories />} />
       </Route>
     </>
   )

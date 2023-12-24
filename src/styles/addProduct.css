@@ -1,0 +1,21 @@
+.test {
+  border: 2px solid red;
+}
+
+#add-product {
+  margin: 5rem 7rem;
+}
+#add-product .title {
+  display: flex;
+  color: #303030;
+  font-size: 2rem;
+  justify-content: center;
+}
+#add-product .product-details {
+  padding-top: 2rem;
+}
+#add-product .submit-btn {
+  margin-top: 2rem;
+}
+
+/*# sourceMappingURL=addProduct.css.map */
